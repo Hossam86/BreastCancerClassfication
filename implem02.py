@@ -15,7 +15,7 @@ pd.set_option("display.max_columns", 500)
 # loading the data
 
 # loading the data
-names = [
+names =[
     "id_number",
     "diagnosis",
     "radius_mean",
@@ -49,4 +49,17 @@ names = [
     "symmetry_worst",
     "fractal_dimension_worst",
 ]
-breast_cancer = pd.read_csv("DataSets/breast_cancer/wdbc.data",names=names)
+breast_cancer =pd.read_csv("DataSets/breast_cancer/wdbc.data",names=names)
+
+dx=["Benign", "Malignant"]
+
+print(breast_cancer.head())
+
+#------------------------------------------------------------------------------
+'''Cleaning'''
+#------------------------------------------------------------------------------
+# Setting 'id_number' as our index
+breast_cancer.set_index(["id_number"], inplace=True)
+
+# Converted to binary to help later on with models and plots
+breast_cancer["diagnosis"] = breast_cancer["diagnosis"].map({"M": 1, "B": 0})
