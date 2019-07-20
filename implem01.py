@@ -1,9 +1,14 @@
-import numpy as nb
+import matplotlib.pyplot as plt
+import numpy as np
 from sklearn.datasets import load_breast_cancer
-from sklearn.metrics import classification_report,confusion_matrix
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
+
+from custom_report import plot_confusion_matrix
+
+np.set_printoptions(precision=2)
 
 bc=load_breast_cancer()
 X=bc.data
@@ -14,7 +19,7 @@ X_train,X_test,y_train,y_test=train_test_split(X,y,random_state=42)
 
 ## build our models
 decision_tree = DecisionTreeClassifier()
-random_forest = RandomForestClassifier(n_estimators=100)
+random_forest = RandomForestClassifier(n_estimators=100,random_state=42)
 
 ## Train the classifiers
 decision_tree.fit(X_train, y_train)
@@ -34,6 +39,22 @@ print(classification_report(y_test, rf_pred, target_names=bc.target_names))
 #Graph our confusion matrix
 dt_cm = confusion_matrix(y_test, dt_pred)
 rf_cm = confusion_matrix(y_test, rf_pred)
+
+
+
+# Plot dt confusion matrix
+plt.figure()
+plot_confusion_matrix(dt_cm, classes=bc.target_names, normalize=True,
+                      title='Decision Tree Confusion Matrix')
+plt.show()
+
+# Plot rf confusion matrix
+plt.figure()
+plot_confusion_matrix(rf_cm, classes=bc.target_names, normalize=True,
+                      title='Random Forest confusion matrix')
+
+plt.show()
+
 
 # Get our features and weights
 feature_list = sorted(zip(map(lambda x: round(x, 2), random_forest.feature_importances_), bc.target_names),
