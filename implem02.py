@@ -63,3 +63,17 @@ breast_cancer.set_index(["id_number"], inplace=True)
 
 # Converted to binary to help later on with models and plots
 breast_cancer["diagnosis"] = breast_cancer["diagnosis"].map({"M": 1, "B": 0})
+
+#==============================================================================
+# Missing Values
+# ===========================================
+for col in breast_cancer:
+    if (breast_cancer[col].isnull().values.ravel().sum()) == 0:
+        pass
+    else:
+        print(col)
+        print((breast_cancer[col].isnull().values.ravel().sum()))
+
+print("Sanity Check! No missing Values found!")
+
+# ===========================================================================
