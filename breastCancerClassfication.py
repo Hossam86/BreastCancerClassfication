@@ -9,7 +9,7 @@ import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import auc, confusion_matrix, roc_curve
 from sklearn.model_selection import GridSearchCV, train_test_split
-
+from utli import print_dx_perc
 plt.style.use("ggplot")
 pd.set_option("display.max_columns", 500)
 
@@ -63,7 +63,7 @@ print("Here 's The dimension of our columns:\n",breast_cancer.dtypes)
 #------------------------------------------------------------------------------
 # Setting 'id_number' as our index
 breast_cancer.set_index(["id_number"], inplace=True)
-
+print(breast_cancer["diagnosis"].iloc[10])
 # Converted to binary to help later on with models and plots
 breast_cancer["diagnosis"] = breast_cancer["diagnosis"].map({"M": 1, "B": 0})
 
@@ -79,4 +79,7 @@ for col in breast_cancer:
 
 print("Sanity Check! No missing Values found!")
 
-# ===========================================================================
+#------------------------------------------------------------------------------
+# Class Imbalance
+#------------------------------------------------------------------------------
+print_dx_perc(breast_cancer,'diagnosis',dx)
