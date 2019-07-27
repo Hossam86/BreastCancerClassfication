@@ -9,7 +9,7 @@ import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import auc, confusion_matrix, roc_curve
 from sklearn.model_selection import GridSearchCV, train_test_split
-from utli import print_dx_perc,variable_importance
+from utli import print_dx_perc,variable_importance,variable_importance_plot
 
 plt.style.use("ggplot")
 pd.set_option("display.max_columns", 500)
@@ -170,3 +170,4 @@ indices_rf = np.argsort(importances_rf)[::-1]
 print(importances_rf)
 
 variable_importance(importances_rf, indices_rf,names[2:])
+variable_importance_plot(importances_rf, indices_rf,names[2:])

@@ -1,3 +1,6 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
 def print_dx_perc(dataframe, col, dx):
     """Function used to print class distribution for our data set"""
     dx_vals = dataframe[col].value_counts()
@@ -11,7 +14,7 @@ def print_dx_perc(dataframe, col, dx):
         )
 
 
-def variable_importance(importance, indices,names):
+def variable_importance(importance, indices, names):
     """
     Purpose:
     ----------
@@ -31,6 +34,50 @@ def variable_importance(importance, indices,names):
     Print statement outputting variable importance in descending order
     """
     print("Feature Ranking : ")
-    for f in range (len(names)):
-        i=f
-        print("%d. the feature '%s' has a Mean Decrease in Gini of %f" % (f + 1,names[indices[i]],importance[indices[f]]))
+    for f in range(len(names)):
+        i = f
+        print(
+            "%d. the feature '%s' has a Mean Decrease in Gini of %f"
+            % (f + 1, names[indices[i]], importance[indices[f]])
+        )
+
+
+def variable_importance_plot(importance, indices, names):
+    """
+    Purpose:
+    ----------
+    Prints bar chart detailing variable importance for CART model
+    NOTE: feature_space list was created because the bar chart
+    was transposed and index would be in incorrect order.
+
+    importance: Array returned from feature_importances_ for CART models organized in descending order
+
+    indices: Organized index of dataframe from largest to smallest based on feature_importances_
+
+    Returns:
+    ----------
+    Returns variable importance plot in descending order
+    """
+    index = np.arange(len(names))
+    importance_desc = sorted(importance)
+    feature_space = []
+    for i in range(len(names)-1, -1, -1):
+        feature_space.append(names[indices[i]])
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+    ax.set_facecolor("#fafafa")
+    plt.title(
+        "Feature importances for Random Forest Model\
+    \nBreast Cancer (Diagnostic)"
+    )
+    plt.barh(index, importance_desc, align="center", color="#875FDB")
+    plt.yticks(index, feature_space)
+
+    plt.ylim(-1, 30)
+    plt.xlim(0, max(importance_desc))
+    plt.xlabel("Mean Decrease in Gini")
+    plt.ylabel("Feature")
+
+    plt.show()
+    plt.close()
+
