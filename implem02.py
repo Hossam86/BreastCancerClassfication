@@ -1,3 +1,4 @@
+#Ref https://www.datascience.com/resources/notebooks/random-forest-intro
 import random
 import time
 
@@ -55,6 +56,8 @@ dx=["Benign", "Malignant"]
 
 print(breast_cancer.head())
 
+print("Here 's The dimension of our data frame,:\n", breast_cancer.shape)
+print("Here 's The dimension of our columns:\n",breast_cancer.dtypes)
 #------------------------------------------------------------------------------
 '''Cleaning'''
 #------------------------------------------------------------------------------
