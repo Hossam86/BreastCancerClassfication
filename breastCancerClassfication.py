@@ -95,4 +95,7 @@ feature_class = breast_cancer.iloc[:, breast_cancer.columns == "diagnosis"]
 training_set, test_set, class_set, test_class_set = train_test_split(
     feature_space, feature_class, test_size=0.20, random_state=42
 )
+# Cleaning test sets to avoid future warning messages
+class_set = class_set.values.ravel()
+test_class_set = test_class_set.values.ravel()
 
