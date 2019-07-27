@@ -9,7 +9,7 @@ import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import auc, confusion_matrix, roc_curve
 from sklearn.model_selection import GridSearchCV, train_test_split
-from utli import print_dx_perc
+from utli import print_dx_perc,variable_importance
 
 plt.style.use("ggplot")
 pd.set_option("display.max_columns", 500)
@@ -137,26 +137,36 @@ print(fit_rf.get_params())
 
 fit_rf.set_params(warm_start=True, oob_score=True)
 
-min_estimators = 15
-max_estimators = 1000
-error_rate = {}
-for i in range(min_estimators, max_estimators + 1):
-    fit_rf.set_params(n_estimators=i)
-    fit_rf.fit(training_set, class_set)
+# min_estimators = 15
+# max_estimators = 1000
+# error_rate = {}
+# for i in range(min_estimators, max_estimators + 1):
+#     fit_rf.set_params(n_estimators=i)
+#     fit_rf.fit(training_set, class_set)
 
-    oob_error = 1 - fit_rf.oob_score_
-    error_rate[i] = oob_error
+#     oob_error = 1 - fit_rf.oob_score_
+#     error_rate[i] = oob_error
 
-# Convert dictionary to a pandas series for easy plotting
-oob_series = pd.Series(error_rate)
-fig, ax = plt.subplots(figsize=(10, 10))
-ax.set_facecolor("#fafafa")
-oob_series.plot(kind="line", color="red")
-plt.axhline(0.055, color="#875FDB", linestyle="--")
-plt.axhline(0.05, color="#875FDB", linestyle="--")
-plt.xlabel("n_estimators")
-plt.ylabel("OOB Error Rate")
-plt.title("OOB Error Rate Across various Forest sizes \n(From 15 to 1000 trees)")
-plt.show()
+# # Convert dictionary to a pandas series for easy plotting
+# oob_series = pd.Series(error_rate)
+# fig, ax = plt.subplots(figsize=(10, 10))
+# ax.set_facecolor("#fafafa")
+# oob_series.plot(kind="line", color="red")
+# plt.axhline(0.055, color="#875FDB", linestyle="--")
+# plt.axhline(0.05, color="#875FDB", linestyle="--")
+# plt.xlabel("n_estimators")
+# plt.ylabel("OOB Error Rate")
+# plt.title("OOB Error Rate Across various Forest sizes \n(From 15 to 1000 trees)")
+# plt.show()
 
-print('OOB Error rate for 400 trees is: {0:.5f}'.format(oob_series[400]))
+# print("OOB Error rate for 400 trees is: {0:.5f}".format(oob_series[400]))
+
+fit_rf.set_params(n_estimators=400, bootstrap=True, warm_start=False, oob_score=False)
+
+print(fit_rf.get_params())
+fit_rf.fit(training_set, class_set)
+importances_rf = fit_rf.feature_importances_
+indices_rf = np.argsort(importances_rf)[::-1]
+print(importances_rf)
+
+variable_importance(importances_rf, indices_rf,names[2:])
