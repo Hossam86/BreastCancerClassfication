@@ -99,3 +99,14 @@ training_set, test_set, class_set, test_class_set = train_test_split(
 class_set = class_set.values.ravel()
 test_class_set = test_class_set.values.ravel()
 
+# ------------------------------------------------------------------------------
+# Fitting Random Forest
+# ------------------------------------------------------------------------------
+# max_depth: The maximum splits for all trees in the forest.
+# bootstrap: An indicator of whether or not we want to use bootstrap samples when building trees.
+# max_features: The maximum number of features that will be used in node splitting — 
+    # the main difference I previously mentioned between bagging trees and random forest. 
+    # Typically, you want a value that is less than p, where p is all features in your data set.
+# criterion: This is the metric used to asses the stopping criteria for the decision trees.
+# Set the random state for reproductibility
+fit_rf = RandomForestClassifier(random_state=42)
