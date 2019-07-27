@@ -55,7 +55,7 @@ breast_cancer = pd.read_csv("DataSets/breast_cancer/wdbc.data", names=names)
 
 dx = ["Benign", "Malignant"]
 
-print(breast_cancer.head())
+# print(breast_cancer.head())
 
 print("Here 's The dimension of our data frame,:\n", breast_cancer.shape)
 print("Here 's The dimension of our columns:\n", breast_cancer.dtypes)
@@ -104,9 +104,59 @@ test_class_set = test_class_set.values.ravel()
 # ------------------------------------------------------------------------------
 # max_depth: The maximum splits for all trees in the forest.
 # bootstrap: An indicator of whether or not we want to use bootstrap samples when building trees.
-# max_features: The maximum number of features that will be used in node splitting — 
-    # the main difference I previously mentioned between bagging trees and random forest. 
-    # Typically, you want a value that is less than p, where p is all features in your data set.
+# max_features: The maximum number of features that will be used in node splitting —
+# the main difference I previously mentioned between bagging trees and random forest.
+# Typically, you want a value that is less than p, where p is all features in your data set.
 # criterion: This is the metric used to asses the stopping criteria for the decision trees.
 # Set the random state for reproductibility
-fit_rf = RandomForestClassifier(random_state=42)
+fit_rf = RandomForestClassifier(n_estimators=50, random_state=42)
+
+# ------------------------------------------------------------------------------
+# Hyperparameter Optimization
+# ------------------------------------------------------------------------------
+np.random.seed(42)
+start = time.time()
+param_dist = {
+    "max_depth": [2, 3, 4],
+    "bootstrap": [True, False],
+    "max_features": ["auto", "sqrt", "log2", None],
+    "criterion": ["gini", "entropy"],
+}
+
+# cv_rf = GridSearchCV(fit_rf, cv=10, param_grid=param_dist, n_jobs=1)
+# cv_rf.fit(training_set, class_set)
+
+# print("Best Parameters using grid search: \n", cv_rf.best_params_)
+end = time.time()
+print("Time taken in grid search: {0: .2f}".format(end - start))
+
+# Set best parameters given by grid search
+fit_rf.set_params(criterion="gini", max_features="log2", max_depth=3)
+
+print(fit_rf.get_params())
+
+fit_rf.set_params(warm_start=True, oob_score=True)
+
+min_estimators = 15
+max_estimators = 1000
+error_rate = {}
+for i in range(min_estimators, max_estimators + 1):
+    fit_rf.set_params(n_estimators=i)
+    fit_rf.fit(training_set, class_set)
+
+    oob_error = 1 - fit_rf.oob_score_
+    error_rate[i] = oob_error
+
+# Convert dictionary to a pandas series for easy plotting
+oob_series = pd.Series(error_rate)
+fig, ax = plt.subplots(figsize=(10, 10))
+ax.set_facecolor("#fafafa")
+oob_series.plot(kind="line", color="red")
+plt.axhline(0.055, color="#875FDB", linestyle="--")
+plt.axhline(0.05, color="#875FDB", linestyle="--")
+plt.xlabel("n_estimators")
+plt.ylabel("OOB Error Rate")
+plt.title("OOB Error Rate Across various Forest sizes \n(From 15 to 1000 trees)")
+plt.show()
+
+print('OOB Error rate for 400 trees is: {0:.5f}'.format(oob_series[400]))
