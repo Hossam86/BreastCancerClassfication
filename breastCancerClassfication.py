@@ -9,7 +9,7 @@ import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import auc, confusion_matrix, roc_curve
 from sklearn.model_selection import GridSearchCV, train_test_split
-from utli import print_dx_perc, variable_importance, variable_importance_plot, cross_val_metrics
+from utli import print_dx_perc, variable_importance, variable_importance_plot, cross_val_metrics, plot_roc_curve
 
 plt.style.use("ggplot")
 pd.set_option("display.max_columns", 500)
@@ -194,3 +194,14 @@ print(test_crosstb)
 accuracy_rf = fit_rf.score(test_set, test_class_set)
 print("Here is our mean accuracy on the test set:\n {0:.3f}"
       .format(accuracy_rf))
+# ------------------------------------------------------------------------------
+# ROC Curve Metrics
+# ------------------------------------------------------------------------------
+fpr2, tpr2, _ = roc_curve(predictions_rf, test_class_set)
+predictions_prob = fit_rf.predict_proba(test_set)[:, 1]
+
+auc_rf = auc(fpr2, tpr2)
+
+plot_roc_curve(fpr2, tpr2, auc_rf, 'rf',
+               xlim=(-0.01, 1.05),
+               ylim=(0.001, 1.05))

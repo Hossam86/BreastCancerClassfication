@@ -113,3 +113,62 @@ def cross_val_metrics(fit, training_set, class_set, print_results=True):
             "Accuracy:{0:0.3f} (+/- {1:0.3f})".format(scores.mean(), scores.std()/2))
     else:
         return scores.mean(), scores.std()/2
+
+
+def plot_roc_curve(fpr, tpr, auc, mod, xlim=None, ylim=None):
+    """
+    Purpose
+    ----------
+    Function creates ROC Curve for respective model given selected parameters.
+    Optional x and y limits to zoom into graph
+
+    Parameters
+    ----------
+    fpr:  Array returned from sklearn.metrics.roc_curve for increasing
+    false positive rates
+    tpr:  Array returned from sklearn.metrics.roc_curve for increasing
+    true positive rates
+    auc:  Float returned from sklearn.metrics.auc (Area under Curve)
+    mod:  String represenation of appropriate model, can only contain the
+    following: ['knn', 'rf', 'nn']
+    xlim: Set upper and lower x-limits
+    ylim: Set upper and lower y-limits
+
+    Returns:
+    ----------
+    Returns plot of Receiving Operating Curve for specific model. Allowing user to
+    specify x and y-limits.
+    """
+    mod_list = ['knn', 'rf', 'nn']
+    method = [('Kth Nearest Neighbor', 'deeppink'),
+              ('Random Forest', 'red'),
+              ('Neural Network', 'purple')]
+
+    plot_title = ''
+    color_value = ''
+    for i in range(0, 3):
+        if mod_list[i] == mod:
+            plot_title = method[i][0]
+            color_value = method[i][1]
+
+    fig, ax = plt.subplots(figsize=(10, 10))
+    ax.set_facecolor('#fafafa')
+
+    plt.plot(fpr, tpr,
+             color=color_value,
+             linewidth=1)
+    plt.title('ROC Curve For {0} (AUC = {1: 0.3f}) \
+          \nBreast Cancer Diagnostic'
+              .format(plot_title, auc))
+
+    plt.plot([0, 1], [0, 1], 'k--', lw=2)  # Add Diagonal line
+    plt.plot([0, 0], [1, 0], 'k--', lw=2, color='black')
+    plt.plot([1, 0], [1, 1], 'k--', lw=2, color='black')
+    if xlim is not None:
+        plt.xlim(*xlim)
+    if ylim is not None:
+        plt.ylim(*ylim)
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.show()
+    plt.close()
