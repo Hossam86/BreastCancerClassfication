@@ -177,3 +177,20 @@ variable_importance_plot(importances_rf, indices_rf, names[2:])
 # K-Fold Cross Validation
 # ------------------------------------------------------------------------------
 cross_val_metrics(fit_rf, training_set, class_set, print_results=True)
+
+# ------------------------------------------------------------------------------
+# Test Set Metrics
+# ------------------------------------------------------------------------------
+predictions_rf = fit_rf.predict(test_set)
+test_crosstb = pd.crosstab(index=test_class_set,
+                           columns=predictions_rf)
+# More human readable
+test_crosstb = test_crosstb.rename(columns={0: 'Benign', 1: 'Malignant'})
+test_crosstb.index = ['Benign', 'Malignant']
+test_crosstb.columns.name = 'n = 114'
+
+print(test_crosstb)
+
+accuracy_rf = fit_rf.score(test_set, test_class_set)
+print("Here is our mean accuracy on the test set:\n {0:.3f}"
+      .format(accuracy_rf))
