@@ -51,7 +51,7 @@ names = [
     "symmetry_worst",
     "fractal_dimension_worst",
 ]
-breast_cancer = pd.read_csv("DataSets/breast_cancer/wdbc.data", names=names)
+breast_cancer = pd.read_csv("BreastCancerClassfication/dataSet/wdbc.data", names=names)
 
 dx = ["Benign", "Malignant"]
 
