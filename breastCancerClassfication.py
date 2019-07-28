@@ -9,7 +9,7 @@ import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import auc, confusion_matrix, roc_curve
 from sklearn.model_selection import GridSearchCV, train_test_split
-from utli import print_dx_perc,variable_importance,variable_importance_plot
+from utli import print_dx_perc, variable_importance, variable_importance_plot, cross_val_metrics
 
 plt.style.use("ggplot")
 pd.set_option("display.max_columns", 500)
@@ -51,7 +51,8 @@ names = [
     "symmetry_worst",
     "fractal_dimension_worst",
 ]
-breast_cancer = pd.read_csv("BreastCancerClassfication/dataSet/wdbc.data", names=names)
+breast_cancer = pd.read_csv(
+    "BreastCancerClassfication/dataSet/wdbc.data", names=names)
 
 dx = ["Benign", "Malignant"]
 
@@ -161,7 +162,8 @@ fit_rf.set_params(warm_start=True, oob_score=True)
 
 # print("OOB Error rate for 400 trees is: {0:.5f}".format(oob_series[400]))
 
-fit_rf.set_params(n_estimators=400, bootstrap=True, warm_start=False, oob_score=False)
+fit_rf.set_params(n_estimators=400, bootstrap=True,
+                  warm_start=False, oob_score=False)
 
 print(fit_rf.get_params())
 fit_rf.fit(training_set, class_set)
@@ -169,5 +171,9 @@ importances_rf = fit_rf.feature_importances_
 indices_rf = np.argsort(importances_rf)[::-1]
 print(importances_rf)
 
-variable_importance(importances_rf, indices_rf,names[2:])
-variable_importance_plot(importances_rf, indices_rf,names[2:])
+variable_importance(importances_rf, indices_rf, names[2:])
+variable_importance_plot(importances_rf, indices_rf, names[2:])
+# ------------------------------------------------------------------------------
+# K-Fold Cross Validation
+# ------------------------------------------------------------------------------
+cross_val_metrics(fit_rf, training_set, class_set, print_results=True)
